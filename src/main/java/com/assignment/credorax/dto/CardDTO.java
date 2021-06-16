@@ -4,9 +4,13 @@ import java.io.Serializable;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class CardDTO implements Serializable {
     private String pan;
     private String expiry;
+
+    @JsonIgnore
     private String cvv;
 
     public String getPan() {

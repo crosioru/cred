@@ -8,24 +8,28 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.validation.constraints.Positive;
 
 import java.io.Serializable;
 
 import java.util.Objects;
-import java.util.Set;
+
+import com.assignment.credorax.exception.InvalidAmountRequestException;
 
 @Entity
 public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="payment_id")
+    private Long paymentId;
+
+    @Column(name = "invoice")
     private Long invoice;
 
-    private Double amount;
+    @Positive(message = "Amount is required and positive integer")
+    private Integer amount;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
@@ -41,7 +45,9 @@ public class Payment implements Serializable {
     public Payment() {
     }
 
-    public Payment(Double amount, Currency currency, Cardholder cardholder, Card card) {
+    public Payment(Long paymentId, Long invoice, Integer amount, Currency currency, Cardholder cardholder, Card card) {
+        this.paymentId = paymentId;
+        this.invoice = invoice;
         this.amount = amount;
         this.currency = currency;
         this.cardholder = cardholder;
@@ -56,11 +62,13 @@ public class Payment implements Serializable {
         this.invoice = invoice;
     }
 
-    public Double getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(Integer amount) {
+        if(amount.intValue() <= 0)
+            throw new InvalidAmountRequestException();
         this.amount = amount;
     }
 
@@ -86,6 +94,14 @@ public class Payment implements Serializable {
 
     public void setCard(Card card) {
         this.card = card;
+    }
+
+    public Long getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(Long id) {
+        this.paymentId = id;
     }
 
     @Override

@@ -3,24 +3,25 @@ package com.assignment.credorax.dto;
 import java.io.Serializable;
 
 import java.util.Objects;
-import java.util.Set;
 
-import com.assignment.credorax.model.Card;
+import com.assignment.credorax.exception.CardholderException;
 import com.assignment.credorax.model.Cardholder;
 import com.assignment.credorax.model.Currency;
 import com.assignment.credorax.model.Payment;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PaymentDTO implements Serializable {
-    @Autowired
-    private static ModelMapper modelMapper;
-
+    private Long paymentId;
     private Long invoice;
     private Double amount;
     private Currency currency;
     private CardholderDTO cardholder;
     private CardDTO card;
+
+    public PaymentDTO() {
+    }
 
     public Long getInvoice() {
         return invoice;
@@ -92,10 +93,15 @@ public class PaymentDTO implements Serializable {
     }
 
     public static PaymentDTO convertToDto(Payment payment) {
+        ModelMapper modelMapper = new ModelMapper();
+        Cardholder cardholder = payment.getCardholder();
+        if(cardholder == null)
+            throw new CardholderException();
         return modelMapper.map(payment, PaymentDTO.class);
     }
 
     public static Payment convertToEntity(PaymentDTO paymentDto) {
+        ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(paymentDto, Payment.class);
     }
 }
