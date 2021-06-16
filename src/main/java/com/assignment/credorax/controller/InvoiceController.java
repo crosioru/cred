@@ -18,21 +18,19 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.modelmapper.ModelMapper;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/credorax")
 public class InvoiceController {
-
-    static final Logger log = LoggerFactory.getLogger(InvoiceController.class);
 
     private ModelMapper modelMapper;
     private CardholderRepository cardholderRepo;
@@ -61,7 +59,7 @@ public class InvoiceController {
         Payment payment = PaymentDTO.convertToEntity(paymentDTO);
         payment.setPaymentId(123L);
         paymentRepo.save(payment);
-        log.info(paymentDTO.toString());
+
         ApprovedResponse approvedResponse = new ApprovedResponse().setApproved(true);
         SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("approved");
         FilterProvider filters = new SimpleFilterProvider().addFilter("ApprovedFilter", filter);
